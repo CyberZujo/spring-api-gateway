@@ -1,0 +1,21 @@
+server:
+  port: 4000
+
+spring:
+  cloud:
+    gateway:
+      global-filter:
+        - LoggingGlobalFilter
+      routes:
+        - id: client-portal
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/portal/**
+            - Header=X-Org-Id, [A-Z0-9]+
+            - Header=X-Portal, client-portal
+          filters:
+            - RedirectionFilter
+            - BeforeRedirectionFilter
+          metadata:
+            redirectURI: http://localhost:8082
+            organisations: ["ORG11A","ORG11B"]
